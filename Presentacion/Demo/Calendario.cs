@@ -25,13 +25,20 @@ namespace Demo
                 S.AddConstraints(S.Unequal(GetColumn(partidos, w))); // cada equipo solo juega una vez cada jornada
             }
 
+            MostrarSolucion(N, S, partidos);
+        }
+
+        private static void MostrarSolucion(int N, ConstraintSystem S, CspTerm[][] partidos)
+        {
             bool unsolved = true;
             ConstraintSolverSolution soln = S.Solve();
             if (soln.HasFoundSolution)
             {
                 unsolved = false;
 
-                StringBuilder linea = new StringBuilder("Equipo ");
+                System.Console.WriteLine(String.Format("Calendario de partidos para {0} equipos.", N));
+
+                StringBuilder linea = new StringBuilder("Equipo  ");
                 for (int i = 0; i < N; i++)
                     linea.Append("J" + (i + 1).ToString() + " ");
 
@@ -39,7 +46,7 @@ namespace Demo
 
                 for (int t = 0; t < N; t++)
                 {
-                    StringBuilder line = new StringBuilder("    ");
+                    StringBuilder line = new StringBuilder("     ");
                     line.Append(t.ToString());
                     line.Append(": ");
                     for (int w = 0; w < N - 1; w++)
