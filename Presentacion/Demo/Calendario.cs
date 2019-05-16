@@ -9,26 +9,26 @@ namespace Demo
         public static void Run(int N)
         {
             ConstraintSystem S = ConstraintSystem.CreateSolver();
-            CspDomain Equipos = S.CreateIntegerInterval(0, N - 1);
-            CspTerm[][] partidos = S.CreateVariableArray(Equipos, "Oponentes", N, N - 1);
+            CspDomain gamesInterval = S.CreateIntegerInterval(0, N - 1);
+            CspTerm[][] games = S.CreateVariableArray(gamesInterval, "Foe", N, N - 1);
 
             for (int t = 0; t < N; t++)
             {
                 S.AddConstraints(                   // Agregamos las constraints
-                  S.Unequal(t, partidos[t]),        // Un equipo no puede jugar consigo mismo
-                  S.Equal(t ^ 1, partidos[t][0])    // la primera ronda se emparejan pares con impares
+                  S.Unequal(t, games[t]),        // Un equipo no puede jugar consigo mismo
+                  S.Equal(t ^ 1, games[t][0])    // la primera ronda se emparejan pares con impares
                 );
             }
 
             for (int w = 0; w < N - 1; w++)
             {
-                S.AddConstraints(S.Unequal(GetColumn(partidos, w))); // cada equipo solo juega una vez cada jornada
+                S.AddConstraints(S.Unequal(GetColumn(games, w))); // cada equipo solo juega una vez cada jornada
             }
 
-            MostrarSolucion(N, S, partidos);
+            ShowSolution(N, S, games);
         }
 
-        private static void MostrarSolucion(int N, ConstraintSystem S, CspTerm[][] partidos)
+        private static void ShowSolution(int N, ConstraintSystem S, CspTerm[][] games)
         {
             bool unsolved = true;
             ConstraintSolverSolution soln = S.Solve();
@@ -36,23 +36,23 @@ namespace Demo
             {
                 unsolved = false;
 
-                System.Console.WriteLine(String.Format("Calendario de partidos para {0} equipos.", N));
+                System.Console.WriteLine(String.Format("Calendar for {0} teams.", N));
 
-                StringBuilder linea = new StringBuilder("Equipo  ");
+                StringBuilder line = new StringBuilder("Team  ");
                 for (int i = 0; i < N; i++)
-                    linea.Append("J" + (i + 1).ToString() + " ");
+                    line.Append("J" + (i + 1).ToString() + " ");
 
-                System.Console.WriteLine(linea.ToString());
+                System.Console.WriteLine(line.ToString());
 
                 for (int t = 0; t < N; t++)
                 {
-                    StringBuilder line = new StringBuilder("     ");
+                    line = new StringBuilder("   ");
                     line.Append(t.ToString());
                     line.Append(": ");
                     for (int w = 0; w < N - 1; w++)
                     {
-                        if (!soln.TryGetValue(partidos[t][w], out object opponent))
-                            throw new InvalidProgramException(partidos[t][w].Key.ToString());
+                        if (!soln.TryGetValue(games[t][w], out object opponent))
+                            throw new InvalidProgramException(games[t][w].Key.ToString());
                         line.Append(opponent.ToString());
                         line.Append("  ");
                     }

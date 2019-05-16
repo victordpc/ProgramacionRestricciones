@@ -13,7 +13,7 @@ namespace Demo
             CspDomain Filas = S.CreateIntegerInterval(0, N - 1);
 
             //Matriz con una celda para cada fila del tablero
-            CspTerm[] tablero = S.CreateVariableVector(Filas, "Tablero", N);
+            CspTerm[] tablero = S.CreateVariableVector(Filas, "Board", N);
 
             for (int i = 0; i < N; i++)
             {
@@ -27,58 +27,60 @@ namespace Demo
                 }
             }
 
-            MostrarSolucion(N, S, tablero);
+            ShowSolution(N, S, tablero);
         }
 
-        private static void MostrarSolucion(int N, ConstraintSystem S, CspTerm[] tablero)
+        private static void ShowSolution(int N, ConstraintSystem S, CspTerm[] board)
         {
             bool unsolved = true;
             ConstraintSolverSolution soln = S.Solve();
             if (soln.HasFoundSolution)
             {
+                Console.WriteLine(string.Format("Resolve the {0} queens problem.", N));
                 unsolved = false;
 
-                string linea = "┌──";
+                string line = "┌──";
                 for (int i = 1; i < N; i++)
-                    linea += "┬──";
-                linea += "┐";
+                    line += "┬──";
+                line += "┐";
 
-                Console.WriteLine(linea);
+                Console.WriteLine(line);
 
                 for (int i = 0; i < N; i++)
                 {
-                    linea = "";
+                    line = "";
 
-                    if (!soln.TryGetValue(tablero[i], out object columna))
-                        throw new InvalidProgramException(tablero[i].Key.ToString());
+                    if (!soln.TryGetValue(board[i], out object columna))
+                        throw new InvalidProgramException(board[i].Key.ToString());
 
                     for (int j = 0; j < N; j++)
                         if (j == int.Parse(columna.ToString()))
-                            linea += "│¤ ";
+                            line += "│¤ ";
                         else
-                            linea += "│  ";
-                    Console.WriteLine(linea + "│");
+                            line += "│  ";
+                    Console.WriteLine(line + "│");
 
                     if (i == N - 1)
                     {
-                        linea = "└──";
+                        line = "└──";
                         for (int k = 1; k < N; k++)
-                            linea += "┴──";
-                        linea += "┘";
+                            line += "┴──";
+                        line += "┘";
                     }
                     else
                     {
-                        linea = "├──";
+                        line = "├──";
                         for (int k = 1; k < N; k++)
-                            linea += "┼──";
-                        linea += "┤";
+                            line += "┼──";
+                        line += "┤";
 
                     }
-                    Console.WriteLine(linea);
+                    Console.WriteLine(line);
                 }
             }
             if (unsolved)
                 System.Console.WriteLine("No solution found.");
         }
+
     }
 }

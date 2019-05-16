@@ -15,25 +15,25 @@ namespace Demo
 
             //Create the decision variable
             Decision be = new Decision(colors, "belgium");
-            Decision de = new Decision(colors, "germany");
+            Decision ge = new Decision(colors, "germany");
             Decision fr = new Decision(colors, "france");
             Decision nl = new Decision(colors, "netherlands");
 
             // Add decision variables to the model
-            model.AddDecisions(be, de, fr, nl);
+            model.AddDecisions(be, ge, fr, nl);
             // Add constraint to the model
-            model.AddConstraints("borders", be != de, be != fr, be != nl, de != fr, de != nl);
+            model.AddConstraints("borders", be != ge, be != fr, be != nl, ge != fr, ge != nl);
 
             Solution solution = context.Solve(new ConstraintProgrammingDirective());
-            int numSoluciones = 0;
+            int numSolutions = 0;
 
-            Console.WriteLine("Muestra todas las combinaciones de colores para pintar en el mapa 4 paises con 4 colores sin que dos paises que comparten frontera tengan el mismo color.");
+            Console.WriteLine("Show all combination for 4 countries with 4 colors whitout repeat colors between two countries sharing border.");
             while (solution.Quality != SolverQuality.Infeasible)
             {
-                Console.WriteLine(string.Format("{4}-> Belgium: {0}\tGermany: {1}\tFrance: {2}\tNetherlands: {3}", be, de, fr, nl, ++numSoluciones));
+                Console.WriteLine(string.Format("{4}-> Belgium: {0}\tGermany: {1}\tFrance: {2}\tNetherlands: {3}", be, ge, fr, nl, ++numSolutions));
                 solution.GetNext();
             }
-            Console.WriteLine(string.Format(numSoluciones > 1 ? "Encontradas {0} soluciones." : "Encontrada {0} solucion.", numSoluciones));
+            Console.WriteLine(string.Format(numSolutions > 1 ? "Find {0} solutions." : "Find {0} solution.", numSolutions));
 
         }
     }
