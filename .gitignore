@@ -3,3 +3,6 @@
 ################################################################################
 
 /Presentacion/Demo/.vs/Demo/v16
+/Presentacion/Demo/bin/Debug
+/Presentacion/Demo/obj/Debug
+*.user
